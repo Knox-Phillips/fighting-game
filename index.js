@@ -13,15 +13,17 @@ const background = new Sprite ({
     x:0,
     y:0
   },
-  imageSrc: "img/background.png"
+  imageSrc: "img/background.png",
 })
 
 const shop = new Sprite ({
   position:{
-    x:0,
-    y:0
+    x:615,
+    y:128
   },
-  imageSrc: "img/shop.png"
+  imageSrc: "img/shop.png",
+  scale : 2.75,
+  framesMax: 6
 })
 
 
