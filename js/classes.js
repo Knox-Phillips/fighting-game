@@ -1,5 +1,11 @@
 class Sprite {
-  constructor({ position, imageSrc, scale = 1, framesMax = 1 }) {
+  constructor({
+    position,
+    imageSrc,
+    scale = 1,
+    framesMax = 1,
+    offset = { x: 0, y: 0 },
+  }) {
     this.position = position;
     this.width = 50;
     this.height = 150;
@@ -10,6 +16,7 @@ class Sprite {
     this.framesCurrent = 0;
     this.framesElapsed = 0;
     this.framesHold = 17;
+    this.offset = offset;
   }
 
   draw() {
@@ -20,18 +27,17 @@ class Sprite {
       this.framesCurrent * (this.image.width / this.framesMax),
       0,
       //length and width of crop
-      (this.image.width / this.framesMax) - 1,
+      this.image.width / this.framesMax - 1,
       this.image.height,
       //crop code ends
-      this.position.x,
-      this.position.y,
+      this.position.x - this.offset.x,
+      this.position.y - this.offset.y,
       (this.image.width / this.framesMax) * this.scale,
       this.image.height * this.scale
     );
   }
-  //Making a method to use the keyframes below that we are requesting
-  update() {
-    this.draw();
+
+  animateFrame() {
     this.framesElapsed++;
     if (this.framesElapsed % this.framesHold === 0) {
       if (this.framesCurrent < this.framesMax - 1) {
@@ -41,11 +47,32 @@ class Sprite {
       }
     }
   }
+  //Making a method to use the keyframes below that we are requesting
+  update() {
+    this.draw();
+    this.animateFrame;
+  }
 }
 
-class Fighter {
-  constructor({ position, velocity, color = "red", offset }) {
-    (this.position = position), (this.velocity = velocity);
+class Fighter extends Sprite {
+  constructor({
+    position,
+    velocity,
+    color = "red",
+    imageSrc,
+    scale = 1,
+    framesMax = 1,
+    offset = { x: 0, y: 0 },
+    sprites,
+  }) {
+    super({
+      position,
+      imageSrc,
+      scale,
+      framesMax,
+      offset,
+    }),
+      (this.velocity = velocity);
     this.width = 50;
     this.height = 150;
     this.lastKey;
@@ -61,24 +88,22 @@ class Fighter {
     this.color = color;
     this.isAttacking;
     this.health = 100;
-  }
-  draw() {
-    c.fillStyle = this.color;
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    this.framesCurrent = 0;
+    this.framesElapsed = 0;
+    this.framesHold = 17;
+    this.sprites = sprites;
 
-    //draw attack box
-    if (this.isAttacking) {
-      c.fillStyle = "green";
-      c.fillRect(
-        this.attackBox.position.x,
-        this.attackBox.position.y,
-        this.attackBox.width,
-        this.attackBox.height
-      );
+    for (const sprite in this.sprites) {
+      sprites[sprite].image = new Image();
+      sprites[sprite].image.src = sprites[sprite].imageSrc;
     }
+
+    console.log(this.sprites);
   }
+
   //Making a method to use the keyframes below that we are requesting
   update() {
+    this.animateFrame();
     this.draw();
     this.attackBox.position.x = this.position.x - this.attackBox.offset.x;
     this.attackBox.position.y = this.position.y;
@@ -98,5 +123,16 @@ class Fighter {
     setTimeout(() => {
       this.isAttacking = false;
     }, 100);
+  }
+
+  switchSprite(sprite) {
+    switch (sprite) {
+      case "idle":
+        break;
+      case "run":
+        break;
+      case "jump":
+        break;
+    }
   }
 }
