@@ -68,6 +68,14 @@ const player = new Fighter({
       attack1: {
         imageSrc:'img/samuraiMack/Attack1.png',
         framesMax:6
+      },
+      takeHit: {
+        imageSrc: 'img/samuraiMack/Take Hit - white silhouette.png',
+        framesMax:4
+      },
+      death: {
+        imageSrc: 'img/samuraiMack/Death.png',
+        framesMax:6
       }
     },
     attackBox: {
@@ -124,8 +132,16 @@ const enemy = new Fighter({
       attack1: {
         imageSrc:'img/kenji/Attack1.png',
         framesMax:4
-      }
-    },
+      },
+      takeHit: {
+        imageSrc: 'img/kenji/Take hit.png',
+        framesMax:3
+      },
+      death: {
+        imageSrc: 'img/samuraiMack/Death.png',
+        framesMax:7
+    }
+  },
     attackBox: {
       offset: {
         x:55,
@@ -133,7 +149,7 @@ const enemy = new Fighter({
       },
       width:185,
       height:50
-    }
+    },
 });
 enemy.draw();
 //Youtubers method for checking which keys are pressed so if we lift off of a and were holding d we still move instead of stopping
@@ -205,7 +221,7 @@ function animate() {
     enemy.switchSprite('fall')
   }
 
-  // detect for collision
+  // detect for collision & enemy hits
   if (
     rectangularCollision({
       rectangle1: player,
@@ -213,8 +229,8 @@ function animate() {
     }) &&
     player.isAttacking && player.framesCurrent === 4
   ) {
+    enemy.takeHit()
     player.isAttacking = false;
-    enemy.health -= 20;
     document.querySelector("#enemyHealth").style.width = enemy.health + "%";
   }
 
@@ -231,8 +247,8 @@ function animate() {
     enemy.isAttacking && 
     enemy.framesCurrent === 2
   ) {
+    player.takeHit()
     enemy.isAttacking = false;
-    player.health -= 10;
     document.querySelector("#playerHealth").style.width = player.health + "%";
   }
 
